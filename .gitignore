@@ -1,3 +1,7 @@
+# Large media files
+Egg Incubator demo .mp4
+*.mp4
+
 # Arduino build output
 build/
 *.elf
