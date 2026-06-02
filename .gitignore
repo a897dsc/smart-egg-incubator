@@ -1,0 +1,21 @@
+# Arduino build output
+build/
+*.elf
+*.hex
+*.bin
+*.map
+
+# Arduino IDE temp files
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# Windows
+$RECYCLE.BIN/
