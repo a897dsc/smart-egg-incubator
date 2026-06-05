@@ -1,25 +1,48 @@
-# Automated Egg Incubator — Arduino Mega
+# Smart Egg Incubator — Arduino Mega 2560
 
-> Graduation Project | Embedded Systems | Arduino Mega 2560
+> **Graduation Project** | Embedded Systems | Real-Time Control | Abdullah Sawalmeh
 
-A fully automated egg incubator controller built on the Arduino Mega 2560.  
-The system manages temperature, humidity, ventilation, egg flipping, water refill, and door security — all running concurrently without blocking delays.
+A fully automated egg incubator controller built on the Arduino Mega 2560 as a graduation project. The system independently manages temperature, humidity, ventilation, egg flipping, water refill, and door security — all subsystems running concurrently using a non-blocking state-machine architecture (zero `delay()` calls).
+
+📄 [Project Report](Report%20About%20Project.pdf) &nbsp;|&nbsp; 📊 [Presentation](Presentation%20Egg%20Incubator.pdf)
+
+---
+
+## Highlights
+
+- **Real-time multi-tasking** on a single microcontroller using `millis()`/`micros()` state machines
+- **Closed-loop control** for temperature and humidity with hysteresis to prevent relay chatter
+- **Day-based automation** — targets and vent intervals adjust automatically throughout the 21-day incubation cycle
+- **Full on-device UI** — 16×2 LCD display + 4×4 keypad for live monitoring and settings
+- **Serial telemetry** — real-time data and command interface via USB serial monitor
 
 ---
 
 ## Features
 
-- **Temperature control** — Heating lamp relay with hysteresis band to prevent relay chatter
-- **Humidity control** — Humidifier + fan relay with hysteresis, auto-disabled during ventilation
+- **Temperature control** — Heating lamp relay with hysteresis band
+- **Humidity control** — Humidifier + fan relay, auto-disabled during ventilation cycles
 - **Automatic ventilation** — Servo-driven vent flap + fan, triggered by time, temperature, or humidity excess
 - **Automatic egg flipping** — Non-blocking stepper motor (TB6600 driver) rotates eggs on a configurable schedule
-- **Water auto-refill** — Debounced float/IR water level sensor opens a valve relay when water is low
+- **Water auto-refill** — Debounced float/IR sensor opens a solenoid valve when water is low
 - **Door alarm** — IR sensor detects open incubator door and triggers a buzzer alert
-- **Day-based auto targets** — Temperature and RH targets adjust automatically by incubation day
-- **16×2 LCD display** — Live readout of temperature, humidity, valve state, vent state, flip countdown, and door status
-- **4×4 keypad UI** — On-device settings for temperature, humidity target, and current day
+- **16×2 LCD display** — Live readout of temperature, humidity, valve/vent state, flip countdown, and door status
+- **4×4 keypad UI** — On-device settings for temperature target, humidity target, and current day
 - **Serial monitor control** — ARM/DISARM flip, manual start, safe-stop, and telemetry via single-char commands
-- **Fully non-blocking** — All subsystems run via `millis()`/`micros()` state machines; zero `delay()` calls
+
+---
+
+## Technologies & Skills
+
+| Category | Details |
+|---|---|
+| **Microcontroller** | Arduino Mega 2560 (AVR ATmega2560) |
+| **Programming** | C++ (Arduino framework), state-machine design, interrupt-safe timing |
+| **Sensors** | DHT11 (temperature & humidity), IR proximity, float switch |
+| **Actuators** | Servo motor, NEMA 17 stepper (TB6600 driver), solenoid valve, relay module |
+| **Communication** | I2C (LCD), UART serial |
+| **UI** | 16×2 LCD + I2C backpack, 4×4 membrane keypad |
+| **Design Patterns** | Non-blocking concurrency, hysteresis control, debouncing, event-driven FSM |
 
 ---
 
@@ -70,11 +93,9 @@ The system manages temperature, humidity, ventilation, egg flipping, water refil
 
 ---
 
-## Circuit Diagram
+## Circuit & Hardware Photos
 
 ![Circuit Diagram](images%20for%20project/1.jpg)
-
-> Additional hardware photos:
 
 | | | |
 |---|---|---|
@@ -85,7 +106,7 @@ The system manages temperature, humidity, ventilation, egg flipping, water refil
 
 ## Libraries Required
 
-Install all libraries via **Arduino IDE → Tools → Manage Libraries**:
+Install via **Arduino IDE → Tools → Manage Libraries**:
 
 | Library | Version tested |
 |---|---|
@@ -99,20 +120,17 @@ Install all libraries via **Arduino IDE → Tools → Manage Libraries**:
 
 ## How to Flash
 
-1. **Install** [Arduino IDE](https://www.arduino.cc/en/software) (version 1.8.x or 2.x)
-2. **Install** all required libraries listed above
-3. **Rename** `3- Last Version of code.txt` → `egg_incubator.ino`  
-   *(or open the `.txt` file and paste its contents into a new Arduino sketch)*
-4. **Select board:** `Tools → Board → Arduino Mega or Mega 2560`
-5. **Select port:** `Tools → Port → COMx` (your Mega's COM port)
-6. **Upload:** Click the Upload button (→)
-7. **Open Serial Monitor** at **9600 baud** to view telemetry and send commands
+1. Install [Arduino IDE](https://www.arduino.cc/en/software) (1.8.x or 2.x)
+2. Install all required libraries listed above
+3. Open `egg_incubator.ino` in Arduino IDE
+4. Select board: `Tools → Board → Arduino Mega or Mega 2560`
+5. Select port: `Tools → Port → COMx`
+6. Click Upload (→)
+7. Open Serial Monitor at **9600 baud** to view telemetry and send commands
 
 ---
 
 ## Serial Commands
-
-Once flashed, open Serial Monitor (9600 baud) and use these single-key commands:
 
 | Key | Action |
 |---|---|
@@ -146,22 +164,21 @@ Once flashed, open Serial Monitor (9600 baud) and use these single-key commands:
 
 | Day Range | Target Temp | Target RH | Vent Interval |
 |---|---|---|---|
-| Days 1–7 | 37.6°C | 56% | Every 30 min |
-| Days 8–18 | 37.6°C | 60% | Every 20 min |
-| Days 19–21 | 37.6°C | 65% | Every 15 min |
+| Days 1–7 | 37.6 °C | 56% | Every 30 min |
+| Days 8–18 | 37.6 °C | 60% | Every 20 min |
+| Days 19–21 | 37.6 °C | 65% | Every 15 min |
 
 ---
 
 ## Project Structure
 
 ```
-egg-incubator/
-├── 3- Last Version of code.txt   # Main Arduino sketch
+smart-egg-incubator/
+├── egg_incubator.ino              # Main Arduino sketch
 ├── Presentation Egg Incubator.pdf
 ├── Report About Project.pdf
-├── Egg Incubator demo .mp4
 └── images for project/
-    ├── 1.jpg
+    ├── 1.jpg  (circuit diagram)
     ├── 2.jpg
     ├── 3.jpg
     ├── 4.jpg
@@ -171,6 +188,6 @@ egg-incubator/
 
 ---
 
-## License
+## Author
 
-This project is submitted as a graduation project. All rights reserved by the author.
+**Abdullah Sawalmeh** — Graduation Project, 2025
